@@ -47,3 +47,11 @@ def update_employee(
 ) -> PATCHEmployeeResponse:
     employee_db = service.update_employee(employee_id, employee)
     return PATCHEmployeeResponse.model_validate(employee_db)
+
+@app.delete("/{employee_id}", status_code=status.HTTP_204_NO_CONTENT)
+@exception_handler
+def delete_employee(
+    employee_id: int,
+    service: EmployeeService = Depends(get_employee_service),
+) -> None:
+    service.delete_employee(employee_id)

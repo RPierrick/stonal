@@ -37,3 +37,8 @@ class EmployeeService:
             setattr(employee_db, key, value)
         self._commit()
         return employee_db
+    
+    def delete_employee(self, employee_id: int) -> None:
+        employee_db = self.retrive_employee(employee_id)
+        self._session.delete(employee_db)
+        self._commit()
