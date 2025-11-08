@@ -1,9 +1,13 @@
-from fastapi import APIRouter, Depends, status
+from typing import Annotated
+
+from fastapi import APIRouter, Depends, Query, status
 
 from app.core.exception_handler import exception_handler
 from app.db.base import SessionLocal
 from app.models.employee import (
     GETEmployeeResponse,
+    GETListEmployeeQueryParams,
+    GETListEmployeeResponse,
     PATCHEmployeeRequest,
     PATCHEmployeeResponse,
     POSTEmployeeRequest,
@@ -48,6 +52,7 @@ def update_employee(
     employee_db = service.update_employee(employee_id, employee)
     return PATCHEmployeeResponse.model_validate(employee_db)
 
+
 @app.delete("/{employee_id}", status_code=status.HTTP_204_NO_CONTENT)
 @exception_handler
 def delete_employee(
@@ -55,3 +60,21 @@ def delete_employee(
     service: EmployeeService = Depends(get_employee_service),
 ) -> None:
     service.delete_employee(employee_id)
+
+
+@app.get("/")
+@exception_handler
+def list_employees(
+    filter_query: Annotated[GETListEmployeeQueryParams, Query()],
+    service: EmployeeService = Depends(get_employee_service),
+) -> GETListEmployeeResponse:
+    list_employee_db = service.list_employee(filter_query)
+    return GETListEmployeeResponse(
+        total=len(list_employee_db),
+        offset=filter_query.offset,
+        limit=filter_query.limit,
+        employees=[
+            GETEmployeeResponse.model_validate(employee_db)
+            for employee_db in list_employee_db
+        ],
+    )

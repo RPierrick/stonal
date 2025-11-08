@@ -23,6 +23,8 @@ class Employee(BaseModel):
 
     @field_validator("salary", mode="after")
     def salary_convertor(cls, v: Decimal) -> Decimal:
+        if v < Decimal(0):
+            raise ValueError("Salary cannot be a negative number")
         return Decimal(float(v) * 100)
 
 
@@ -54,3 +56,22 @@ class PATCHEmployeeRequest(Employee): ...
 
 
 class PATCHEmployeeResponse(EmployeeOutput): ...
+
+
+class GETListEmployeeQueryParams(BaseModel):
+    offset: int = Field(default=0, ge=0, le=100)
+    limit: int = Field(default=25, gt=0)
+    position: str | None = Field(default=None)
+    min_salary: Decimal | None = Field(default=None)
+    max_salary: Decimal | None = Field(default=None)
+
+    @field_validator("max_salary", "min_salary", mode="after")
+    def salary_convertor(cls, v: Decimal) -> Decimal:
+        return Decimal(float(v) * 100)
+
+
+class GETListEmployeeResponse(BaseModel):
+    total: int
+    offset: int
+    limit: int
+    employees: list[GETEmployeeResponse]

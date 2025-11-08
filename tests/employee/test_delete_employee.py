@@ -14,4 +14,3 @@ class TestRetriveEmployee:
         )
 
         assert response_get.status_code == 404
-

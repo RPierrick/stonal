@@ -1,9 +1,15 @@
-from sqlalchemy import exc
+from decimal import Decimal
+
+from sqlalchemy import exc, select
 from sqlalchemy.orm import Session
 
 from app.core.custom_exceptions import NotFoundError, UniqueConstraintError
 from app.db import Employee
-from app.models.employee import PATCHEmployeeRequest, POSTEmployeeRequest
+from app.models.employee import (
+    GETListEmployeeQueryParams,
+    PATCHEmployeeRequest,
+    POSTEmployeeRequest,
+)
 
 
 class EmployeeService:
@@ -37,8 +43,35 @@ class EmployeeService:
             setattr(employee_db, key, value)
         self._commit()
         return employee_db
-    
+
     def delete_employee(self, employee_id: int) -> None:
         employee_db = self.retrive_employee(employee_id)
         self._session.delete(employee_db)
         self._commit()
+
+    def _list_by_position(self, position: str) -> list[Employee]:
+        stmt = select(Employee).where(Employee.position == position)
+        return self._session.execute(stmt).scalars().all()  # type: ignore
+
+    def _list_by_salary_range(
+        self, min_salary: Decimal | None, max_salary: Decimal | None
+    ) -> list[Employee]:
+        stmt = select(Employee)
+        if min_salary is not None:
+            stmt = stmt.where(Employee.salary >= min_salary)
+        if max_salary is not None:
+            stmt = stmt.where(Employee.salary <= max_salary)
+        return self._session.execute(stmt).scalars().all()  # type: ignore
+
+    def _list_using_pagination(self, offset: int, limit: int) -> list[Employee]:
+        stmt = select(Employee).offset(offset).limit(limit).order_by(Employee.id)
+        return self._session.execute(stmt).scalars().all()  # type: ignore
+
+    def list_employee(self, filter_query: GETListEmployeeQueryParams) -> list[Employee]:
+        if filter_query.position is not None:
+            return self._list_by_position(filter_query.position)
+        if filter_query.min_salary is not None or filter_query.max_salary is not None:
+            return self._list_by_salary_range(
+                filter_query.min_salary, filter_query.max_salary
+            )
+        return self._list_using_pagination(filter_query.offset, filter_query.limit)
