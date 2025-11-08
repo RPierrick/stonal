@@ -1,7 +1,7 @@
 from sqlalchemy import exc
 from sqlalchemy.orm import Session
 
-from app.core.custom_exceptions import UniqueConstraintError
+from app.core.custom_exceptions import NotFoundError, UniqueConstraintError
 from app.db import Employee
 from app.models.employee import POSTEmployeeRequest
 
@@ -22,3 +22,9 @@ class EmployeeService:
             self._session.add(employee)
             self._commit()
         return employee.id  # type: ignore
+
+    def retrive_employee(self, employee_id: int) -> Employee:
+        employee = self._session.get(Employee, employee_id)
+        if employee is None:
+            raise NotFoundError(f"Employee id : {employee_id} not found")
+        return employee

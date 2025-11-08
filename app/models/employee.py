@@ -1,7 +1,15 @@
 from datetime import date
-from decimal import Decimal
+from decimal import ROUND_HALF_UP, Decimal
 
-from pydantic import BaseModel, EmailStr, Field, condecimal, field_validator
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    EmailStr,
+    Field,
+    condecimal,
+    field_serializer,
+    field_validator,
+)
 
 
 class Employee(BaseModel):
@@ -23,3 +31,17 @@ class POSTEmployeeRequest(Employee): ...
 
 class POSTEmployeeResponse(BaseModel):
     id: int
+
+
+class GETEmployeeResponse(Employee):
+    id: int
+
+    model_config = ConfigDict(from_attributes=True)
+
+    @field_validator("salary", mode="after")
+    def salary_convertor(cls, v: Decimal) -> Decimal:
+        return Decimal(v / 100)
+
+    @field_serializer("salary")
+    def salary_floating_point(self, v: Decimal) -> Decimal:
+        return v.quantize(Decimal("0.00"), rounding=ROUND_HALF_UP)

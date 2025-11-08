@@ -2,7 +2,11 @@ from fastapi import APIRouter, Depends, status
 
 from app.core.exception_handler import exception_handler
 from app.db.base import SessionLocal
-from app.models.employee import POSTEmployeeRequest, POSTEmployeeResponse
+from app.models.employee import (
+    GETEmployeeResponse,
+    POSTEmployeeRequest,
+    POSTEmployeeResponse,
+)
 from app.services.employee import EmployeeService
 
 
@@ -21,3 +25,12 @@ def create_employee(
 ) -> POSTEmployeeResponse:
     employee_id = service.create_employee(employee)
     return POSTEmployeeResponse(id=employee_id)
+
+
+@app.get("/{employee_id}")
+@exception_handler
+def retrive_employee(
+    employee_id: int, service: EmployeeService = Depends(get_employee_service)
+) -> GETEmployeeResponse:
+    employee = service.retrive_employee(employee_id)
+    return GETEmployeeResponse.model_validate(employee)
