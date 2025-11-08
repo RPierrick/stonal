@@ -1,0 +1,9 @@
+httpx==0.28.1
+mypy==1.17.1
+pre-commit==4.3.0
+pylint==4.0.2
+pytest==8.4.2
+pytest-cov==7.0.0
+pytest-env==1.2.0
+ruff==0.12.12
+SQLAlchemy-Utils==0.42.0

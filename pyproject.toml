@@ -1,0 +1,49 @@
+[tool.alembic]
+
+script_location = "%(here)s/alembic"
+prepend_sys_path = [
+    "."
+]
+
+[tool.mypy]
+ignore_missing_imports = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+strict_optional = true
+warn_unused_configs = true
+no_implicit_optional = true
+exclude = ["alembic"]
+
+
+[tool.ruff]
+lint.select = ["B", "C90", "E", "F", "I", "S", "W", "T10", "T20"]
+lint.extend-ignore = ["T201", "S311", "W291", "B008", "W293", "E501"]
+fix = true
+lint.fixable = ["B", "C90", "E", "F", "I", "S", "W"]
+line-length = 88
+extend-exclude = ["tests", "alembic", "*/__init__.py"]
+target-version = "py311"
+
+[tool.ruff.lint.isort]
+lines-after-imports = 2
+
+[tool.ruff.format]
+quote-style= "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.pytest.ini_options]
+pythonpath = [
+    "app"
+]
+addopts = "--cov=app --cov-report=term-missing"
+env = [
+    "db_name=test",
+    "db_user_name=postgres",
+    "db_password=password",
+    "db_hos=localhost",
+    "db_port=5432"
+]
