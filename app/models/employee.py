@@ -33,7 +33,7 @@ class POSTEmployeeResponse(BaseModel):
     id: int
 
 
-class GETEmployeeResponse(Employee):
+class EmployeeOutput(Employee):
     id: int
 
     model_config = ConfigDict(from_attributes=True)
@@ -45,3 +45,12 @@ class GETEmployeeResponse(Employee):
     @field_serializer("salary")
     def salary_floating_point(self, v: Decimal) -> Decimal:
         return v.quantize(Decimal("0.00"), rounding=ROUND_HALF_UP)
+
+
+class GETEmployeeResponse(EmployeeOutput): ...
+
+
+class PATCHEmployeeRequest(Employee): ...
+
+
+class PATCHEmployeeResponse(EmployeeOutput): ...

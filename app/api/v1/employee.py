@@ -4,6 +4,8 @@ from app.core.exception_handler import exception_handler
 from app.db.base import SessionLocal
 from app.models.employee import (
     GETEmployeeResponse,
+    PATCHEmployeeRequest,
+    PATCHEmployeeResponse,
     POSTEmployeeRequest,
     POSTEmployeeResponse,
 )
@@ -32,5 +34,16 @@ def create_employee(
 def retrive_employee(
     employee_id: int, service: EmployeeService = Depends(get_employee_service)
 ) -> GETEmployeeResponse:
-    employee = service.retrive_employee(employee_id)
-    return GETEmployeeResponse.model_validate(employee)
+    employee_db = service.retrive_employee(employee_id)
+    return GETEmployeeResponse.model_validate(employee_db)
+
+
+@app.patch("/{employee_id}")
+@exception_handler
+def update_employee(
+    employee_id: int,
+    employee: PATCHEmployeeRequest,
+    service: EmployeeService = Depends(get_employee_service),
+) -> PATCHEmployeeResponse:
+    employee_db = service.update_employee(employee_id, employee)
+    return PATCHEmployeeResponse.model_validate(employee_db)

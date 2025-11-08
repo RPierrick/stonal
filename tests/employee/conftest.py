@@ -25,6 +25,18 @@ def set_up_data(test_session: Session) -> Generator:
             salary=8000000,
         )
     )
+    test_session.add(
+        Employee(
+            id=627,
+            first_name="Clark",
+            last_name="Kent",
+            email="clark.kent@corp.com",
+            birth_date=datetime.date(1980, 5, 15),
+            hire_date=datetime.date(2010, 6, 1),
+            position="The Son of Krypton",
+            salary=8000000,
+        )
+    )
     test_session.commit()
 
     def override_employee_service() -> EmployeeService:
