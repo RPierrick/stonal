@@ -6,6 +6,7 @@ class TestUpdateEmployee:
         """Only change the salary"""
         response = client.patch(
             "/api/v1/employees/626",
+            headers={"Authorization": "Basic YWRtaW46MTIzNA==="},
             json={
                 "salary": "0",
                 "first_name": "Bruce",
@@ -33,13 +34,14 @@ class TestUpdateEmployee:
         }
 
     def test_update_employee_not_found(self, client: TestClient) -> None:
-        response = client.get("/api/v1/employees/0")
+        response = client.get("/api/v1/employees/0", headers={"Authorization": "Basic YWRtaW46MTIzNA==="},)
 
         assert response.status_code == 404
 
     def test_update_employee_email_already_use(self, client: TestClient) -> None:
         response = client.patch(
             "/api/v1/employees/627",
+            headers={"Authorization": "Basic YWRtaW46MTIzNA==="},
             json={
                 "salary": "0",
                 "first_name": "Bruce",
@@ -52,3 +54,8 @@ class TestUpdateEmployee:
         )
 
         assert response.status_code == 400
+
+    def test_no_credentials(self, client: TestClient) -> None:
+        response = client.get("/api/v1/employees/0",)
+
+        assert response.status_code == 401

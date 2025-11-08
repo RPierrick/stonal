@@ -3,6 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Query, status
 
 from app.core.exception_handler import exception_handler
+from app.core.security.basic_auth import basic_authorization
 from app.db.base import SessionLocal
 from app.models.employee import (
     GETEmployeeResponse,
@@ -16,7 +17,7 @@ from app.models.employee import (
 from app.services.employee import EmployeeService
 
 
-app = APIRouter()
+app = APIRouter(dependencies=[Depends(basic_authorization)])
 
 
 def get_employee_service() -> EmployeeService:
@@ -36,7 +37,8 @@ def create_employee(
 @app.get("/{employee_id}")
 @exception_handler
 def retrive_employee(
-    employee_id: int, service: EmployeeService = Depends(get_employee_service)
+    employee_id: int,
+    service: EmployeeService = Depends(get_employee_service),
 ) -> GETEmployeeResponse:
     employee_db = service.retrive_employee(employee_id)
     return GETEmployeeResponse.model_validate(employee_db)

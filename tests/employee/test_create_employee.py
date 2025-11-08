@@ -5,6 +5,7 @@ class TestCreateEmployee:
     def test_create_employee_sucess(self, client: TestClient) -> None:
         response = client.post(
             "/api/v1/employees",
+            headers={"Authorization": "Basic YWRtaW46MTIzNA==="}, 
             json={
                 "first_name": "string",
                 "last_name": "string",
@@ -19,13 +20,18 @@ class TestCreateEmployee:
         assert response.status_code == 201
 
     def test_create_employee_wrong_body(self, client: TestClient) -> None:
-        response = client.post("/api/v1/employees", json={})
+        response = client.post(
+            "/api/v1/employees",
+            headers={"Authorization": "Basic YWRtaW46MTIzNA==="},
+            json={},
+        )
 
         assert response.status_code == 422
 
     def test_create_employee_same_email(self, client: TestClient) -> None:
         response = client.post(
             "/api/v1/employees",
+            headers={"Authorization": "Basic YWRtaW46MTIzNA==="},
             json={
                 "first_name": "string",
                 "last_name": "string",
@@ -42,3 +48,12 @@ class TestCreateEmployee:
         response_body = response.json()
 
         assert response_body["detail"]["exception"] == "Unique Key Constraint Violation"
+
+    def test_create_no_credentials(self, client: TestClient) -> None:
+        response = client.post(
+            "/api/v1/employees",
+            headers={},
+            json={},
+        )
+
+        assert response.status_code == 401
