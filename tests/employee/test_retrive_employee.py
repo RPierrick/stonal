@@ -10,7 +10,7 @@ from typing import Generator
 
 class TestRetriveEmployee:
     @pytest.fixture(autouse=True)
-    def setUp(self, test_session: Session) -> Generator:
+    def init_data(self, test_session: Session) -> Generator:
         test_session.add(
             Employee(
                 id=626,
