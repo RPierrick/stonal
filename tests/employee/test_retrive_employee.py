@@ -18,14 +18,16 @@ class TestRetriveEmployee:
             "first_name": "Bruce",
             "last_name": "Wayne",
             "email": "bruce.wayne@corp.com",
-            "position": "The Dark Knight",
+            "position": "Software Engineer",
             "birth_date": "1980-05-15",
             "hire_date": "2010-06-01",
         }
 
     def test_retrive_employee_not_found(self, client: TestClient) -> None:
-        response = client.get("/api/v1/employees/0",
-                              headers={"Authorization": "Basic YWRtaW46MTIzNA==="},)
+        response = client.get(
+            "/api/v1/employees/0",
+            headers={"Authorization": "Basic YWRtaW46MTIzNA==="},
+        )
 
         assert response.status_code == 404
 

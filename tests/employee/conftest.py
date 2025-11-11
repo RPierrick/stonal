@@ -21,7 +21,7 @@ def set_up_data(test_session: Session) -> Generator:
             email="bruce.wayne@corp.com",
             birth_date=datetime.date(1980, 5, 15),
             hire_date=datetime.date(2010, 6, 1),
-            position="The Dark Knight",
+            position="Software Engineer",
             salary=8000000,
         )
     )
@@ -33,7 +33,7 @@ def set_up_data(test_session: Session) -> Generator:
             email="clark.kent@corp.com",
             birth_date=datetime.date(1980, 5, 15),
             hire_date=datetime.date(2010, 6, 1),
-            position="The Son of Krypton",
+            position="Marketing Coordinator",
             salary=8000000,
         )
     )
@@ -45,7 +45,7 @@ def set_up_data(test_session: Session) -> Generator:
             email="clark.ken@corp.com",
             birth_date=datetime.date(1980, 5, 15),
             hire_date=datetime.date(2010, 6, 1),
-            position="The Son of Krypton",
+            position="Marketing Coordinator",
             salary=8000000,
         )
     )

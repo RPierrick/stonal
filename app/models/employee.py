@@ -1,3 +1,5 @@
+import enum
+import html
 from datetime import date
 from decimal import ROUND_HALF_UP, Decimal
 
@@ -12,13 +14,21 @@ from pydantic import (
 )
 
 
+class Position(enum.StrEnum):
+    MARKETING_COORDINATOR = "Marketing Coordinator"
+    HR_SPECIALIST = "HR Specialist"
+    DATA_ANALYST = "Data Analyst"
+    PROJECT_MANAGER = "Project Manager"
+    SOFTWARE_ENGINEER = "Software Engineer"
+
+
 class Employee(BaseModel):
     first_name: str = Field(max_length=50)
     last_name: str = Field(max_length=50)
     email: EmailStr = Field(max_length=100)
     birth_date: date
     hire_date: date
-    position: str = Field(max_length=50)
+    position: Position
     salary: condecimal(max_digits=10, decimal_places=2)  # type: ignore
 
     @field_validator("salary", mode="after")
@@ -26,6 +36,10 @@ class Employee(BaseModel):
         if v < Decimal(0):
             raise ValueError("Salary cannot be a negative number")
         return Decimal(float(v) * 100)
+
+    @field_validator("first_name", "last_name", mode="after")
+    def escape_field(cls, v: str) -> str:
+        return html.escape(v)
 
 
 class POSTEmployeeRequest(Employee): ...

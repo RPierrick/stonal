@@ -5,14 +5,14 @@ class TestCreateEmployee:
     def test_create_employee_sucess(self, client: TestClient) -> None:
         response = client.post(
             "/api/v1/employees",
-            headers={"Authorization": "Basic YWRtaW46MTIzNA==="}, 
+            headers={"Authorization": "Basic YWRtaW46MTIzNA==="},
             json={
                 "first_name": "string",
                 "last_name": "string",
                 "email": "user@example.com",
                 "birth_date": "2025-11-08",
                 "hire_date": "2025-11-08",
-                "position": "string",
+                "position": "Software Engineer",
                 "salary": 2.12,
             },
         )
@@ -38,7 +38,7 @@ class TestCreateEmployee:
                 "email": "bruce.wayne@corp.com",
                 "birth_date": "2025-11-08",
                 "hire_date": "2025-11-08",
-                "position": "string",
+                "position": "Software Engineer",
                 "salary": 2.12,
             },
         )
