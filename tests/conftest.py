@@ -9,8 +9,6 @@ from sqlalchemy.orm.session import close_all_sessions
 from app.db.base import Base
 from app.main import app
 
-from app.core.config import config
-
 from sqlalchemy_utils import create_database, drop_database, database_exists
 
 
@@ -33,7 +31,6 @@ def test_session() -> Generator:
     TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
     Base.metadata.create_all(bind=engine)
     connection = engine.connect()
-    transaction = connection.begin()
 
     session = TestingSessionLocal(bind=connection)
 
@@ -42,5 +39,4 @@ def test_session() -> Generator:
     finally:
         close_all_sessions()
         session.close()
-        transaction.rollback()
         connection.close()

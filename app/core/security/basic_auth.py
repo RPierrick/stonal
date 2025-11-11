@@ -9,7 +9,7 @@ from app.core.config import config
 security = HTTPBasic()
 
 
-def basic_authorization(credentials: HTTPBasicCredentials = Depends(security)) -> bool:
+def basic_authorization(credentials: HTTPBasicCredentials = Depends(security)) -> None:
     is_username_correct = secrets.compare_digest(
         credentials.username.encode(), config.fast_api_user.encode()
     )
@@ -23,4 +23,3 @@ def basic_authorization(credentials: HTTPBasicCredentials = Depends(security)) -
             detail="Invalid credentials",
             headers={"WWW-Authenticate": "Basic"},
         )
-    return True

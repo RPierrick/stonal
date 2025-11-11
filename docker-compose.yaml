@@ -1,6 +1,22 @@
 version: "3"
 
 services:
+  stonal-api:
+    build: .
+    image: stonal-api
+    ports:
+      - "8000:8000"
+    depends_on:
+      - stonal-db
+    environment:
+      db_name: mydatabase
+      db_user_name: postgres
+      db_password: password
+      db_host: stonal-db
+      db_port: "5432"
+    links:
+      - stonal-db
+
   stonal-db:
     container_name: stonal-db
     image: postgres:12
