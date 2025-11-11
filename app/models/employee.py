@@ -28,7 +28,7 @@ class Employee(BaseModel):
     email: EmailStr = Field(max_length=100)
     birth_date: date
     hire_date: date
-    position: Position
+    position: Position = Field(max_length=50)
     salary: condecimal(max_digits=10, decimal_places=2)  # type: ignore
 
     @field_validator("salary", mode="after")
